@@ -11,6 +11,7 @@
 
 #include <errno.h>
 #include <libxml/tree.h>
+#include <libxml/parser.h>
 #include <string.h>
 
 static int add_attr_to_channel(struct iio_channel *chn, xmlNode *n)

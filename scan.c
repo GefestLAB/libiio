@@ -43,13 +43,19 @@ ssize_t iio_scan_context_get_info_list(struct iio_scan_context *ctx,
 			token; token = iio_strtok_r(NULL, ",", &rest)) {
 
 		/* Since tokens are all null terminated, it's safe to use strcmp on them */
+#if WITH_LOCAL_BACKEND
 		if (WITH_LOCAL_BACKEND && !strcmp(token, "local")) {
 			ret = local_context_scan(&scan_result);
-		} else if (WITH_USB_BACKEND && (!strcmp(token, "usb") ||
+		} else 
+#endif
+#if WITH_USB_BACKEND
+		if (WITH_USB_BACKEND && (!strcmp(token, "usb") ||
 						!strncmp(token, "usb=", sizeof("usb=") - 1))) {
 			token = token[3] == '=' ? token + 4 : NULL;
 			ret = usb_context_scan(&scan_result, token);
-		} else if (HAVE_DNS_SD && !strcmp(token, "ip")) {
+		} else 
+#endif
+		if (HAVE_DNS_SD && !strcmp(token, "ip")) {
 			ret = dnssd_context_scan(&scan_result);
 		} else {
 			ret = -ENODEV;
